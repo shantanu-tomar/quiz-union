@@ -14,13 +14,9 @@ from users.models import Profile
 API_CONFIG_URL = "https://opentdb.com/api_config.php"
 QUIZ_BASE_URL = "https://opentdb.com/api.php?amount={}&category={}&difficulty={}&type=multiple"
 
+
 def home(request):
-
-    context = {
-
-    }
-
-    return render(request, "quiz/home.html", context)
+    return render(request, "quiz/home.html")
 
 
 # Keeping quiz categories up-to-date
@@ -71,7 +67,7 @@ def fetch_quiz(category, difficulty, amount):
         category = ""
 
     api_url = QUIZ_BASE_URL.format(amount, category, difficulty)
-    print(api_url)
+    
     quiz_data = requests.get(api_url).json()
     return quiz_data
 
@@ -97,6 +93,7 @@ def quiz(request):
         user_quiz = Quiz.objects.create(
             taken_by=user, difficulty=difficulty, category=category_obj
         )
+        print(user_quiz.difficulty)
 
 
         # Checking if selected category is a custom category
@@ -148,6 +145,7 @@ def submit_quiz(request):
     user = request.user
     quiz_id = int(request.POST.get("quiz"))
     answer_records = request.POST.get("user_answers")
+    time_taken = json.loads(request.POST.get("time"))
 
     answer_records = json.loads(answer_records)
     user_profile = get_object_or_404(Profile, user=user)
@@ -183,14 +181,14 @@ def submit_quiz(request):
 
     quiz_obj = get_object_or_404(Quiz, id=quiz_id)
     quiz_obj.score = correct_answers
-    quiz_obj.category = correct_answers
     quiz_obj.save()
 
 
     context = {
         "total_questions": settings.QUESTION_AMOUNT,
         "correct_answers": correct_answers,
-        "incorrect_answers": incorrect_answers
+        "incorrect_answers": incorrect_answers,
+        "time_taken": time_taken
     }
     
     return render(request, 'quiz/finish.html', context)

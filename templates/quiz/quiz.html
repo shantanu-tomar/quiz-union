@@ -49,6 +49,17 @@ nav {
 		display: none;
 	}
 }
+
+#timerDiv {
+	position: fixed;
+	bottom: 10px;
+	right: 5px;
+	background-color: black;
+	color: white;
+	opacity: 0.7;
+	padding: 5px;
+	z-index: 1000;
+}
 </style>
 	
 <div style="min-height: 100vh">
@@ -84,26 +95,6 @@ nav {
 
 			  <div class="form-group col-md-2 m-sm-1 mr-sm-0 m-0">
 			  	<button type="submit" class="btn btn-primary w-100">Start</button>
-			  </div>
-			</div>
-
-			<div class="form-row text-light mt-2" style="justify-content: flex-end">
-				<div class="form-group mr-3">
-			    <div class="form-check">
-			      <input class="form-check-input" type="checkbox" id="excludeAttempted" name="exclude_attempted">
-			      <label class="form-check-label" for="excludeAttempted">
-			        Exclude my past attempted questions
-			      </label>
-			    </div>
-			  </div>
-
-			  <div class="form-group">
-			    <div class="form-check">
-			      <input class="form-check-input" type="checkbox" id="excludeCorrect" name="exclude_correct">
-			      <label class="form-check-label" for="excludeCorrect">
-			        Only exclude past questions I answered correctly
-			      </label>
-			    </div>
 			  </div>
 			</div>
 		</form>
@@ -143,31 +134,20 @@ nav {
 					  </div>
 					</div>
 
-				  <div class="form-group">
-				    <div class="form-check">
-				      <input class="form-check-input" type="checkbox" id="excludeAttempted" name="exclude_attempted">
-				      <label class="form-check-label" for="excludeAttempted">
-				        Exclude my past attempted questions
-				      </label>
-				    </div>
-				  </div>
-
-				  <div class="form-group">
-				    <div class="form-check">
-				      <input class="form-check-input" type="checkbox" id="excludeCorrect" name="exclude_correct">
-				      <label class="form-check-label" for="excludeCorrect">
-				        Only exclude past questions I answered correctly
-				      </label>
-				    </div>
-				  </div>
-			
-					<button type="submit" class="btn btn-primary w-100">Start</button>
+				  <button type="submit" class="btn btn-primary w-100">Start</button>
 				</form>
+
+				<hr/>
 			</div>
 
 
 			{% if quiz %}
 				<div>
+					<div id="timerDiv">
+						<i class="fa fa-clock-o mr-1" aria-hidden="true"></i>
+						<label id="minutes">00</label>&nbsp; : &nbsp; <label id="seconds">00</label> 
+					</div>
+					
 					<ul class="list list-unstyled">
 						{% for ques in quiz.questions.all %}
 						<li class="mb-3">
@@ -178,7 +158,7 @@ nav {
 							    
 							    <ul id="{{ques.id}}_choices" class="choices-list list list-unstyled">
 							    	{% for choice in ques.get_choices %}
-							    	<li class="p-2 mt-1 mb-1" onclick="registerAnswer({{ques.id}}, {{choice}}, {{ques.get_choices }})">
+							    	<li class="p-2 mt-1 mb-1" onclick="registerAnswer({{ques.id}}, {{choice | escape}}, {{ques.get_choices | escape}})">
 							    		{{choice.0}}
 							    	</li>
 							    	{% endfor %}
@@ -194,7 +174,8 @@ nav {
 						{% csrf_token %}
 						<input type="text" name="user_answers" id="userAnswers" value="{}" hidden />
 						<input type="text" name="quiz" value="{{quiz.id}}" hidden />
-						<button class="btn-lg btn-success">Show Score</button>
+						<input type="text" name="time" value="" hidden id="timeInput" />
+						<button type="submit" class="btn-lg btn-success">Show Score</button>
 					</form>
 				</div>
 
@@ -205,7 +186,7 @@ nav {
 				<ul class="list mt-5">
 					<li>The Quiz Union fetches <b>questions</b> and <b>categories</b> from both- the <a href="https://opentdb.com/api_config.php">Open Trivia API</a>, and those that were custom added to the database.</li>
 
-					<li>You have your very own <a href="{% url 'profile' %}">profile</a> dashboard, wherein you can find your <b>quiz history</b> and revisit them and their results.</li>
+					<li>You have your very own <a href="{% url 'users:profile' %}">profile</a> dashboard, wherein you can find your <b>quiz history</b> and revisit them and their results.</li>
 
 					<li>Although not required, you can <a href="{% url 'update_categories' %}">refresh</a> the quiz categories to fetch the most up-to-date categories from Open Trivia.</li>
 				</ul>
@@ -215,15 +196,50 @@ nav {
 </div>
 
 <script type="text/javascript">
+	
+	var minutes = document.getElementById("minutes");
+	var second = document.getElementById("seconds");
+	var timeInput = document.getElementById('timeInput');
+
+	var totalSeconds = 0;
+
+	function setTime() {
+	  ++totalSeconds;
+	  let currentSecs = pad(totalSeconds % 60);
+	  let currentMins = pad(parseInt(totalSeconds / 60));
+
+	  seconds.innerHTML = currentSecs;
+	  minutes.innerHTML = currentMins;
+	  timeInput.value = JSON.stringify({
+	  	"mins": currentMins,
+	  	"secs": currentSecs
+	  });
+	}
+
+	function pad(val) {
+	  var valString = val + "";
+	  if (valString.length < 2) {
+	    return "0" + valString;
+	  } else {
+	    return valString;
+	  }
+	}
+
+	var timer = setInterval(setTime, 1000);
+
 	var answersRecord = document.getElementById('userAnswers');
 	answersRecord.value = "{}";
+
+	function parseEntities(txt) {
+		// To parse French / Greek letters
+		return new DOMParser().parseFromString(txt, 'text/html').body.innerText;
+	}
 
 	function registerAnswer(quesId, choice, allChoices) {
 		// RECORDING ANSWER TO SAVE IN DATABASE
 		let record = JSON.parse(answersRecord.value);
 		record[quesId] = choice;
 		answersRecord.value = JSON.stringify(record);
-		console.log(answersRecord.value);
 		
 		// SHOW VISUAL FEEDBACK
 
@@ -236,7 +252,7 @@ nav {
 				li_tags[i].onclick = null;
 				li_tags[i].classList.add("li-disabled");
 
-				if (li_tags[i].innerHTML.trim() == choice[0]) {
+				if (li_tags[i].innerHTML.trim() == parseEntities(choice[0])) {
 					li_tags[i].classList.add("correct-answer");
 				}
 			}
@@ -247,11 +263,11 @@ nav {
 				li_tags[i].onclick = null;
 				li_tags[i].classList.add("li-disabled");
 
-				if (li_tags[i].innerHTML.trim() == choice[0]) {
+				if (li_tags[i].innerHTML.trim() == parseEntities(choice[0])) {
 					li_tags[i].classList.add("wrong-answer");
 				}
 				for (let option of allChoices) {
-					if (option[0] == li_tags[i].innerHTML.trim()) {
+					if (parseEntities(option[0]) == li_tags[i].innerHTML.trim()) {
 						if(option[1] == "True") {
 							li_tags[i].classList.add("correct-answer");
 						}

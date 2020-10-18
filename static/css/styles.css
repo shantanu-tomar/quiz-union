@@ -52,49 +52,6 @@ nav {
   font-weight: normal;
 }
 
-.navIconBadge {
-  font-size: 10px;
-  position: absolute;
-  top:0px;
-  right: 0px;
-}
-
-#navUserDropdown {
-  position: fixed;
-  top:52px;
-  right: 0;
-  z-index: 98;
-  background-color: #1E5598;
-  color: white;
-  border: 0.5px solid black;
-  border-top: 0px;
-}
-
-#navUserDropdown ul li a:hover {
-  /*background-color: #00163F;*/
-  color: yellow;
-}
-
-#navUserDropdown ul li a {
-  color: white;
-}
-
-.fa-stack {
-   line-height: unset; 
-   vertical-align: unset; 
-}
-
-.fa-stack-1x {
-  line-height: unset; 
-}
-
-.fa-stack-1x, .fa-stack-2x {
-  position: unset; 
-  top: 0px;
-  width: auto;
-}
-
-
 .card {
   padding: 10px;
   box-shadow: 3px 0px 3px #eee;

@@ -19,7 +19,7 @@ def demo_login(request):
     demo_pass = settings.DEMO_USER_PASS
 
     user = authenticate(username=demo_email, password=demo_pass)
-    print(user)
+    
     if user is not None:
         login(request, user)
         return redirect('/')

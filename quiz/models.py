@@ -37,7 +37,7 @@ class Category(ValidatedModel):
     custom_category = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.id)
+        return self.category
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -65,7 +65,7 @@ class Question(ValidatedModel):
             [self.correct_answer, "True"], [self.choice_2, "False"],
             [self.choice_3, "False"], [self.choice_4, "False"],
         ]
-        choices = [[x[0].replace("'", "\\'"), x[1]] for x in choices]
+        # choices = [[x[0].replace("&#039;", "\'"), x[1]] for x in choices]
         random.shuffle(choices)
         return choices
 

@@ -28,7 +28,7 @@
 	    <a href="#">Sign Up</a>
 	    <br/>
 	    <span class="text-muted">forgot your password ? </span>
-	    <a class="text-primary" data-toggle="modal" data-target="#forgotPassModalCenter">Reset here</a>
+	    <a class="text-primary" href="{% url 'password_reset' %}">Reset here</a>
 		</div>
 
 		<div id="sampleLoginDiv" class="card col-6 col-md-3 mt-3 mt-md-0 offset-md-1" style="margin: auto">
@@ -45,39 +45,6 @@
       </div>
     </div>
 	</div>
-</div>
-
-<!-- FORGOT PASSWORD MODAL -->
-<div class="modal fade" id="forgotPassModalCenter" tabindex="-1" role="dialog" aria-labelledby="forgotPassModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="forgotPassModalTitle">Forgot Password</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-
-      <form id="forgotPassForm">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="f_email">Registered email</label>
-            <span class="required text-danger">*</span>
-
-            <input id="f_email_input" class="form-control" type="email" name="f_email" required>
-          
-          </div>
-          
-          <small class="text-muted mt-3">A link to reset password will be sent to your registered email address.</small>
-        </div>
-        
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
 </div>
 
 

@@ -132,6 +132,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 
 LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
 
 # message tags to ensure compatability b/w bootstrap alert & django message colors
 MESSAGE_TAGS = {
