@@ -19,7 +19,9 @@
         <td>
           {% if quiz.category %}{{quiz.category.category}}{% else %}Any{% endif %}
         </td>
-        <td>{{quiz.difficulty}}</td>
+        <td>
+          {% if quiz.difficulty %}{{quiz.difficulty}}{% else %}Any{% endif %}
+        </td>
         <td>{{quiz.score}}</td>
         <td>{{quiz.created}}</td>
       </tr>
