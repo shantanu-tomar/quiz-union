@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style type="text/css">
+nav {
+  border-bottom: none !important;
+}
+
+#quizFilterDesktop {
+  border-bottom: 3px solid blue;
+}
+
+.li-disabled:hover {
+	background-color: none !important;
+	cursor: arrow !important;
+}
+
+.choices-list li {
+	cursor: pointer;
+}
+
+.choices-list li:hover {
+	background-color: #d3d3d3;
+}
+
+.correct-answer{
+	background-color: #77ffa7 !important;
+}
+
+.wrong-answer{
+	background-color: #ff6b6b !important;
+}
+
+@media (max-width: 768px) {
+	#quizFilterDesktop{
+		display: none;
+	}
+	#quizFilterMobile {
+		display: block;
+	}
+}
+
+@media (min-width: 769px) {
+	#quizFilterDesktop{
+		display: block;
+	}
+	#quizFilterMobile {
+		display: none;
+	}
+}
+</style>
+	
+<div style="min-height: 100vh">
+	<div id="quizFilterDesktop">
+		<form id="quizConfigForm" method="POST" action="{% url 'quiz' %}" class='col-sm-12 pb-2 pt-1' style="background-color: #4257b2">
+
+			{% csrf_token %}
+			<div id="configFormRow" class="form-row" style="justify-content: space-around;">
+				<div class="form-group col-md-5 m-sm-1 ml-sm-0 m-0">
+					<div class="row">
+				    <select class="form-control btn btn-warning col-10" id="categorySelect" name="category">
+				    	<option value="any">Any Category</option>
+				    	{% for category in categories %}
+				    	{% if category.identifier != 'any' %}
+				      <option value="{{category.identifier}}">{{category.category}}</option>
+				      {% endif %}
+				    	{% endfor %}
+				    </select>
+				    <button type="button" class="btn btn-warning col-1 ml-1" title="Get Latest Categories" onclick="location.href='{% url 'update_categories' %}'">
+				    	<i class="fa fa-refresh" style="font-size: inherit;"></i>
+				    </button>
+				  </div>
+			  </div>
+
+			  <div class="form-group col-md-4 m-sm-1 m-0">
+			    <select class="form-control btn btn-info" id="difficultySelect" name="difficulty">
+			    	<option value="">Any Difficulty</option>
+			    	{% for difficulty in difficulties %}
+			      <option value="{{difficulty.0}}">{{difficulty.1}}</option>
+			    	{% endfor %}
+			    </select>
+			  </div>
+
+			  <div class="form-group col-md-2 m-sm-1 mr-sm-0 m-0">
+			  	<button type="submit" class="btn btn-primary w-100">Start</button>
+			  </div>
+			</div>
+
+			<div class="form-row text-light mt-2" style="justify-content: flex-end">
+				<div class="form-group mr-3">
+			    <div class="form-check">
+			      <input class="form-check-input" type="checkbox" id="excludeAttempted" name="exclude_attempted">
+			      <label class="form-check-label" for="excludeAttempted">
+			        Exclude my past attempted questions
+			      </label>
+			    </div>
+			  </div>
+
+			  <div class="form-group">
+			    <div class="form-check">
+			      <input class="form-check-input" type="checkbox" id="excludeCorrect" name="exclude_correct">
+			      <label class="form-check-label" for="excludeCorrect">
+			        Only exclude past questions I answered correctly
+			      </label>
+			    </div>
+			  </div>
+			</div>
+		</form>
+	</div>
+
+
+	<div class="row" style="margin-top: 50px">
+		<div class="container">
+			<div id="quizFilterMobile">
+				<form method="POST" action="{% url 'quiz' %}" class='p-2'>
+				  <div class="form-row">
+				    <div class="form-group col-10">
+				      <select class="form-control btn btn-warning" id="categorySelect" name="category">
+					    	<option value="any">Any Category</option>
+					    	{% for category in categories %}
+					    	{% if category.identifier != 'any' %}
+					      <option value="{{category.identifier}}">{{category.category}}</option>
+					      {% endif %}
+					    	{% endfor %}
+					    </select>
+				    </div>
+				    <div class="form-group col-2">
+				      <button type="button" class="btn btn-warning w-100" title="Get Latest Categories" onclick="location.href='{% url 'update_categories' %}'">
+					    	<i class="fa fa-refresh" style="font-size: inherit;"></i>
+					    </button>
+				    </div>
+				  </div>
+
+				  <div class="form-row">
+					  <div class="form-group col-12">
+					    <select class="form-control btn btn-info" id="difficultySelect" name="difficulty">
+					    	<option value="">Any Difficulty</option>
+					    	{% for difficulty in difficulties %}
+					      <option value="{{difficulty.0}}">{{difficulty.1}}</option>
+					    	{% endfor %}
+					    </select>
+					  </div>
+					</div>
+
+				  <div class="form-group">
+				    <div class="form-check">
+				      <input class="form-check-input" type="checkbox" id="excludeAttempted" name="exclude_attempted">
+				      <label class="form-check-label" for="excludeAttempted">
+				        Exclude my past attempted questions
+				      </label>
+				    </div>
+				  </div>
+
+				  <div class="form-group">
+				    <div class="form-check">
+				      <input class="form-check-input" type="checkbox" id="excludeCorrect" name="exclude_correct">
+				      <label class="form-check-label" for="excludeCorrect">
+				        Only exclude past questions I answered correctly
+				      </label>
+				    </div>
+				  </div>
+			
+					<button type="submit" class="btn btn-primary w-100">Start</button>
+				</form>
+			</div>
+
+
+			{% if quiz %}
+				<div>
+					<ul class="list list-unstyled">
+						{% for ques in quiz.questions.all %}
+						<li class="mb-3">
+							<div class="card">
+								<div class="card-body">
+									{% autoescape off %}
+									<h5 class="card-title">{{ques.question_text}}</h5>
+							    
+							    <ul id="{{ques.id}}_choices" class="choices-list list list-unstyled">
+							    	{% for choice in ques.get_choices %}
+							    	<li class="p-2 mt-1 mb-1" onclick="registerAnswer({{ques.id}}, {{choice}}, {{ques.get_choices }})">
+							    		{{choice.0}}
+							    	</li>
+							    	{% endfor %}
+							    </ul>
+							    {% endautoescape %}
+							  </div>
+							</div>
+						</li>
+						{% endfor %}
+					</ul>
+
+					<form method="POST" action="{% url 'submit_quiz' %}">
+						{% csrf_token %}
+						<input type="text" name="user_answers" id="userAnswers" value="{}" hidden />
+						<input type="text" name="quiz" value="{{quiz.id}}" hidden />
+						<button class="btn-lg btn-success">Show Score</button>
+					</form>
+				</div>
+
+			{% else %}
+				<h3><b>It's lonely here</b></h3>
+				<h5>Set the quiz configuration to your liking, and hit Start!</h5>
+
+				<ul class="list mt-5">
+					<li>The Quiz Union fetches <b>questions</b> and <b>categories</b> from both- the <a href="https://opentdb.com/api_config.php">Open Trivia API</a>, and those that were custom added to the database.</li>
+
+					<li>You have your very own <a href="{% url 'profile' %}">profile</a> dashboard, wherein you can find your <b>quiz history</b> and revisit them and their results.</li>
+
+					<li>Although not required, you can <a href="{% url 'update_categories' %}">refresh</a> the quiz categories to fetch the most up-to-date categories from Open Trivia.</li>
+				</ul>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var answersRecord = document.getElementById('userAnswers');
+	answersRecord.value = "{}";
+
+	function registerAnswer(quesId, choice, allChoices) {
+		// RECORDING ANSWER TO SAVE IN DATABASE
+		let record = JSON.parse(answersRecord.value);
+		record[quesId] = choice;
+		answersRecord.value = JSON.stringify(record);
+		console.log(answersRecord.value);
+		
+		// SHOW VISUAL FEEDBACK
+
+		let choicesList = document.getElementById(`${quesId}_choices`);
+		let li_tags = choicesList.children;
+
+		if (choice[1] == "True") {
+			for (let i=0; i < li_tags.length; i++) {
+				// Disabling future onclick events
+				li_tags[i].onclick = null;
+				li_tags[i].classList.add("li-disabled");
+
+				if (li_tags[i].innerHTML.trim() == choice[0]) {
+					li_tags[i].classList.add("correct-answer");
+				}
+			}
+		}
+		else {
+			for (let i=0; i < li_tags.length; i++) {
+				// Disabling future onclick events
+				li_tags[i].onclick = null;
+				li_tags[i].classList.add("li-disabled");
+
+				if (li_tags[i].innerHTML.trim() == choice[0]) {
+					li_tags[i].classList.add("wrong-answer");
+				}
+				for (let option of allChoices) {
+					if (option[0] == li_tags[i].innerHTML.trim()) {
+						if(option[1] == "True") {
+							li_tags[i].classList.add("correct-answer");
+						}
+					}
+				}
+			}
+		}
+	}
+</script>
+
+{% endblock content %}

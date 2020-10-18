@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<head>
+	<title>Profile-
+		{% if user.first_name and not user.last_name %}
+		{{user.first_name}}
+		{% elif user.first_name and user.last_name %}
+		{{user.first_name}} {{user.last_name}}
+		{% else %}
+		{{user.username}}
+		{% endif %}
+	</title>
+</head>
+
+<style>
+
+label{
+	margin-bottom: 0px;
+}
+
+</style>
+
+<div class="container" style="min-height: 100vh">
+	<div class="media col-lg-6 col-sm-12 mt-3" style="margin:auto">
+		<a href="{{profile.image.url}}">
+			<img style="width:70px; height:70px; margin-right:15px" class="rounded-circle account-img" src="{{ profile.image.url }}">
+		</a>
+		<div class="media-body">
+			<h4 class="account-heading">
+				{% if user.name %}
+					{{ user.name }}
+				{% else %}
+					User
+				{% endif %}
+			</h4>
+			<p class="text-secondary">
+				{{user.email}}
+			</p>
+		</div>
+	</div>
+
+	<div class="col-lg-6 col-sm-12" style="margin:auto">
+		<!-- add multipart/form-data to save the image to database -->
+		<form method="POST" style="margin-top:30px; " enctype="multipart/form-data">
+			{% csrf_token %}
+			<fieldset class="form-group">
+				<h5 class="border-bottom mb-4">
+					Profile Info
+				</h5>
+				{{u_form|crispy}}
+				{{p_form|crispy}}
+			</fieldset>
+			<div class="form-group">
+				<button class="btn btn-outline-success" type="submit">Update</button>
+			</div>
+		</form>
+	</div>
+
+	<hr/>
+
+	<ul class="list-unstyled">	
+		<li>
+			<a class='btn btn-outline-primary mt-1' href="{% url 'quiz_history' %}">Quiz History</a>
+		</li>
+		<li>
+			<a class="btn btn-outline-success mt-1" href="{% url 'change_password' %}">Change Password</a>
+		</li>
+	</ul>
+</div>
+
+{% endblock content %}

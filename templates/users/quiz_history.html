@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container" style="min-height: 100vh">
+	<h3 class="my-3 h3 text-left"><u>Quiz History</u></h3>
+
+  {% if quizzes %}
+	<table class="table table-bordered text-center col-md-12" style=" overflow-x:auto">
+    <tr>
+      <th>Category</th>
+      <th>Difficulty</th>
+      <th>Score</th>
+      <th>Taken On</th>
+    </tr>
+
+    {% for quiz in quizzes %}
+      <tr>
+        <td>
+          {% if quiz.category %}{{quiz.category.category}}{% else %}Any{% endif %}
+        </td>
+        <td>{{quiz.difficulty}}</td>
+        <td>{{quiz.score}}</td>
+        <td>{{quiz.created}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  {% else %}
+  	<div class="mt-5" style="text-align:center; vertically-align:middle">
+  		<span style="color:red">You have not taken any quizzes yet.</span>
+  	</div>
+  {% endif %}
+</div>
+
+{% endblock content %}

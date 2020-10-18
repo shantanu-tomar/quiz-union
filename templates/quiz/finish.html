@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container" style="min-height: 100vh">
+	<h4 class="mt-5">Quiz saved to your profile.</h4>
+	<h6 class="mt-2">Now you can access your Quiz History from your profile dashboard.</h6>
+
+	<div class="card col-md-5 col-sm-6 col-12 mt-5" style="margin: auto">
+		<div class="card-body">
+			<h4 class="card-title">Score Card</h4>
+			<hr/>
+			<ul class="list list-unstyled">
+				<li class="mt-3">
+					<div style="display: flex; justify-content: space-between">
+						<span>Total Questions: </span>
+						<span><b>{{total_questions}}</b></span>
+				</li>
+				<li class="mt-3 text-success">
+					<div style="display: flex; justify-content: space-between">
+						<span>Correct Questions: </span>
+						<span><b>{{correct_answers}}</b></span>
+				</li>
+				<li class="mt-3 text-danger">
+					<div style="display: flex; justify-content: space-between">
+						<span>Incorrect Questions: </span>
+						<span><b>{{incorrect_answers}}</b></span>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+	
+{% endblock content %}

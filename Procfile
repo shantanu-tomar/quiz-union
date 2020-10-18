@@ -1,0 +1,1 @@
+web: gunicorn quizunion.wsgi --log-file -

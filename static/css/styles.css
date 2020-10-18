@@ -1,0 +1,117 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  max-width: 100vw;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Copse'; 
+  overflow-x: hidden;
+}
+
+#footer {
+    padding:10px;
+    background-color: #4257b2;
+    color: #F8F8FF;
+    width:100%;
+    border-top: 3px solid blue;
+}
+
+@media (max-width: 768px){
+  #homeContainer {
+    min-height: 100vh;
+  }
+}
+
+#footer a {
+  /*text-decoration: none;*/
+  color: #F8F8FF;
+}
+
+nav {
+  border-bottom: 3px solid blue;
+
+}
+
+.navIconDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navIcon {
+  font-size: 20px !important;
+}
+
+.navIconCaption {
+  padding-top: 5px;
+  font-size:14px;
+  font-weight: normal;
+}
+
+.navIconBadge {
+  font-size: 10px;
+  position: absolute;
+  top:0px;
+  right: 0px;
+}
+
+#navUserDropdown {
+  position: fixed;
+  top:52px;
+  right: 0;
+  z-index: 98;
+  background-color: #1E5598;
+  color: white;
+  border: 0.5px solid black;
+  border-top: 0px;
+}
+
+#navUserDropdown ul li a:hover {
+  /*background-color: #00163F;*/
+  color: yellow;
+}
+
+#navUserDropdown ul li a {
+  color: white;
+}
+
+.fa-stack {
+   line-height: unset; 
+   vertical-align: unset; 
+}
+
+.fa-stack-1x {
+  line-height: unset; 
+}
+
+.fa-stack-1x, .fa-stack-2x {
+  position: unset; 
+  top: 0px;
+  width: auto;
+}
+
+
+.card {
+  padding: 10px;
+  box-shadow: 3px 0px 3px #eee;
+}
+
+
+/*LOGIN PAGE*/
+a {
+  cursor: pointer;
+}
+
+.demo-user {
+  cursor: pointer;
+  border-radius: 10%;
+  padding-top: 20px;
+}
+
+.demo-user:hover {
+  background-color: #E4E7EC;
+}
