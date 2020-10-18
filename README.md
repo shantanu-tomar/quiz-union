@@ -1,4 +1,5 @@
 # The Quiz Union
+hosted at: https://quiz-union.herokuapp.com
 
 A quiz website that fetches questions from the Open Trivia API.
 Admin users can also add questions to the databse
@@ -13,6 +14,6 @@ Admin users can also add questions to the databse
 
   <li>Although not required, you can <a href="{% url 'update_categories' %}">refresh</a> the quiz categories to fetch the most up-to-date categories from Open Trivia.</li>
   
-  
+  <li><b>Inbuilt-timer</b> to time your responses.</li>
   <li>run <b>python manage.py test</b> to run tests.</li>
 </ul>
